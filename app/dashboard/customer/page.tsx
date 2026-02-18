@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 import { Package, Heart, MapPin, CreditCard, LogOut, User, Clock, CheckCircle, Truck, Search, ChevronRight, X, AlertCircle, ShoppingBag, Star, ArrowUpRight, ArrowDownLeft, Gift, Plus, Trash2, Edit } from 'lucide-react';
 import TechcoinIcon from '../../components/TechcoinIcon';
 import Link from 'next/link';
