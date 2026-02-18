@@ -1,5 +1,6 @@
 'use client';
-export const dynamic = 'force-dynamic';
+
+import { Suspense } from 'react';
 import { Package, Heart, MapPin, CreditCard, LogOut, User, Clock, CheckCircle, Truck, Search, ChevronRight, X, AlertCircle, ShoppingBag, Star, ArrowUpRight, ArrowDownLeft, Gift, Plus, Trash2, Edit } from 'lucide-react';
 import TechcoinIcon from '../../components/TechcoinIcon';
 import Link from 'next/link';
@@ -8,6 +9,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+
+// ... (keep interface Address) ...
 
 interface Address {
     id: number;
@@ -21,7 +24,12 @@ interface Address {
     is_default: boolean | null;
 }
 
-export default function CustomerDashboard() {
+
+
+// ... (rest of the component logic remains essentially the same, just inside this function) ...
+
+
+function CustomerDashboardContent() {
     const { user, isLoading, logout, techcoinBalance, refreshProfile } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -1343,5 +1351,13 @@ export default function CustomerDashboard() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function CustomerDashboard() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <CustomerDashboardContent />
+        </Suspense>
     );
 }

@@ -1,6 +1,12 @@
 'use client';
 export const dynamic = 'force-dynamic';
-import { useState, useMemo, useEffect } from 'react';
+
+
+
+
+
+
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useProducts } from '../context/ProductContext';
 import { ShoppingCart, Filter, ChevronDown, ChevronRight } from 'lucide-react';
@@ -64,7 +70,7 @@ const CATEGORIES = [
     { name: 'ลำโพง', icon: '🔊' },
 ];
 
-export default function ProductsPage() {
+function ProductsPageContent() {
     const { products } = useProducts();
     const { addToCart } = useCart();
     const searchParams = useSearchParams();
@@ -377,5 +383,13 @@ export default function ProductsPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ProductsPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ProductsPageContent />
+        </Suspense>
     );
 }
