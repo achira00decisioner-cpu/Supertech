@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 import { useState } from 'react';
 import { Monitor, Cpu, CheckCircle, Zap, ShieldCheck, Box, Disc, RefreshCcw, Save } from 'lucide-react';
 import { useCart } from '../context/CartContext';
