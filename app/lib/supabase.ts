@@ -1,23 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '@/types/supabase'
 
-// 1. Validation Logic
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+// Check if environment variables are missing
 if (!supabaseUrl || !supabaseAnonKey) {
-    if (typeof window === 'undefined') {
-        // Log error on server side but don't crash immediately unless used
-        console.error("⚠️ Error: Missing Supabase Environment Variables (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)");
-    } else {
-        // On client side, it might be critical
-        console.error("⚠️ Error: Missing Supabase Environment Variables");
-    }
+    // Only log warning, do not throw error to allow build process to complete for static pages
+    console.warn('⚠️ Warning: Missing Supabase Environment Variables. Supabase features may not work correctly.')
 }
 
-// 2. Robust Export for Client/Server
-// Create client only if keys are available to avoid build crash
-export const supabase = createClient<Database>(
-    supabaseUrl || '',
-    supabaseAnonKey || ''
-);
+// Use fallback values during build time if environment variables are missing
+// This prevents "supabaseUrl is required" error during static generation (e.g., /_not-found)
+const url = supabaseUrl || 'https://placeholder.supabase.co'
+const key = supabaseAnonKey || 'placeholder-key'
+
+export const supabase = createClient<Database>(url, key)
