@@ -413,7 +413,7 @@ function ReviewList({ productId }: { productId: any }) {
 
             // 2. Fetch Profiles
             const userIds = Array.from(new Set(reviewsData.map(r => r.user_id).filter(Boolean)));
-            let profilesMap = new Map();
+            const profilesMap = new Map();
 
             if (userIds.length > 0) {
                 const { data: profilesData } = await supabase

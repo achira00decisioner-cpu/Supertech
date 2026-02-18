@@ -162,8 +162,8 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
 
                 // If UI sends both (which Admin Dashboard will), calculate.
                 if (updatedProduct.price !== undefined && updatedProduct.originalPrice !== undefined) {
-                    let op = Number(updatedProduct.originalPrice);
-                    let p = Number(updatedProduct.price);
+                    const op = Number(updatedProduct.originalPrice);
+                    const p = Number(updatedProduct.price);
 
                     if (op > p) {
                         const percent = Math.round(((op - p) / op) * 100);
@@ -190,25 +190,27 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
                 .from('products')
                 .update(updates as any)
                 .eq('id', Number(id))
-                .select()
+                .select('*, brands(name)') // Fetch brand name
                 .single();
 
             if (error) throw error;
 
             // Update Local State
             if (data) {
+                const newData = data as any;
                 setProducts(prev => prev.map(p => {
                     if (p.id === id) {
                         return {
                             ...p,
-                            name: data.name || '',
-                            price: Number(data.price),
-                            originalPrice: Number(data.original_price), // Update
-                            discount: data.discount, // Update
-                            category: data.category || 'General',
-                            image: data.image_url || '',
-                            description: data.description || '',
-                            images: data.image_url ? [data.image_url] : [],
+                            name: newData.name || '',
+                            price: Number(newData.price),
+                            originalPrice: Number(newData.original_price), // Update
+                            discount: newData.discount, // Update
+                            category: newData.category || 'General',
+                            brand: newData.brands?.name || p.brand || '', // Update with fallback
+                            image: newData.image_url || '',
+                            description: newData.description || '',
+                            images: newData.image_url ? [newData.image_url] : [],
                         };
                     }
                     return p;

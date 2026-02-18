@@ -7,11 +7,7 @@ export type Json =
     | Json[]
 
 export type Database = {
-    // Allows to automatically instantiate createClient with right options
-    // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-    __InternalSupabase: {
-        PostgrestVersion: "14.1"
-    }
+
     public: {
         Tables: {
             addresses: {
@@ -24,6 +20,7 @@ export type Database = {
                     phone: string | null
                     province: string | null
                     recipient_name: string | null
+                    sub_district: string | null
                     user_id: string
                     zipcode: string | null
                 }
@@ -36,6 +33,7 @@ export type Database = {
                     phone?: string | null
                     province?: string | null
                     recipient_name?: string | null
+                    sub_district?: string | null
                     user_id: string
                     zipcode?: string | null
                 }
@@ -48,6 +46,7 @@ export type Database = {
                     phone?: string | null
                     province?: string | null
                     recipient_name?: string | null
+                    sub_district?: string | null
                     user_id?: string
                     zipcode?: string | null
                 }
@@ -61,6 +60,103 @@ export type Database = {
                     },
                 ]
             }
+            brands: {
+                Row: {
+                    created_at: string
+                    id: number
+                    logo_url: string | null
+                    name: string
+                    slug: string
+                }
+                Insert: {
+                    created_at?: string
+                    id?: number
+                    logo_url?: string | null
+                    name: string
+                    slug: string
+                }
+                Update: {
+                    created_at?: string
+                    id?: number
+                    logo_url?: string | null
+                    name?: string
+                    slug?: string
+                }
+                Relationships: []
+            }
+            categories: {
+                Row: {
+                    created_at: string
+                    description: string | null
+                    id: number
+                    name: string
+                    parent_id: number | null
+                    slug: string
+                }
+                Insert: {
+                    created_at?: string
+                    description?: string | null
+                    id?: number
+                    name: string
+                    parent_id?: number | null
+                    slug: string
+                }
+                Update: {
+                    created_at?: string
+                    description?: string | null
+                    id?: number
+                    name?: string
+                    parent_id?: number | null
+                    slug?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "categories_parent_id_fkey"
+                        columns: ["parent_id"]
+                        isOneToOne: false
+                        referencedRelation: "categories"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
+            favorites: {
+                Row: {
+                    created_at: string
+                    id: number
+                    product_id: number
+                    user_id: string
+                }
+                Insert: {
+                    created_at?: string
+                    id?: number
+                    product_id: number
+                    user_id: string
+                }
+                Update: {
+                    created_at?: string
+                    id?: number
+                    product_id?: number
+                    user_id?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "favorites_product_id_fkey"
+                        columns: ["product_id"]
+                        isOneToOne: false
+                        referencedRelation: "products"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "favorites_user_id_fkey"
+                        columns: ["user_id"]
+                        isOneToOne: false
+                        referencedRelation: "profiles"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
+
+
             order_items: {
                 Row: {
                     id: number
@@ -143,36 +239,63 @@ export type Database = {
             }
             products: {
                 Row: {
+                    brand_id: number | null
                     category: string | null
+                    category_id: number | null
                     created_at: string
                     description: string | null
+                    discount: string | null
                     id: number
                     image_url: string | null
                     name: string | null
+                    original_price: number | null
                     price: number | null
                     stock: number | null
                 }
                 Insert: {
+                    brand_id?: number | null
                     category?: string | null
+                    category_id?: number | null
                     created_at?: string
                     description?: string | null
+                    discount?: string | null
                     id?: number
                     image_url?: string | null
                     name?: string | null
+                    original_price?: number | null
                     price?: number | null
                     stock?: number | null
                 }
                 Update: {
+                    brand_id?: number | null
                     category?: string | null
+                    category_id?: number | null
                     created_at?: string
                     description?: string | null
+                    discount?: string | null
                     id?: number
                     image_url?: string | null
                     name?: string | null
+                    original_price?: number | null
                     price?: number | null
                     stock?: number | null
                 }
-                Relationships: []
+                Relationships: [
+                    {
+                        foreignKeyName: "products_brand_id_fkey"
+                        columns: ["brand_id"]
+                        isOneToOne: false
+                        referencedRelation: "brands"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "products_category_id_fkey"
+                        columns: ["category_id"]
+                        isOneToOne: false
+                        referencedRelation: "categories"
+                        referencedColumns: ["id"]
+                    }
+                ]
             }
             profiles: {
                 Row: {
@@ -188,6 +311,7 @@ export type Database = {
                     line_id: string | null
                     phone: string | null
                     role: string | null
+                    techcoin_balance: number | null
                     updated_at: string | null
                 }
                 Insert: {
@@ -203,6 +327,7 @@ export type Database = {
                     line_id?: string | null
                     phone?: string | null
                     role?: string | null
+                    techcoin_balance?: number | null
                     updated_at?: string | null
                 }
                 Update: {
@@ -218,6 +343,7 @@ export type Database = {
                     line_id?: string | null
                     phone?: string | null
                     role?: string | null
+                    techcoin_balance?: number | null
                     updated_at?: string | null
                 }
                 Relationships: []
@@ -257,6 +383,42 @@ export type Database = {
                     },
                 ]
             }
+            techcoin_transactions: {
+                Row: {
+                    amount: number
+                    created_at: string
+                    description: string | null
+                    id: number
+                    type: string
+                    user_id: string
+                }
+                Insert: {
+                    amount: number
+                    created_at?: string
+                    description?: string | null
+                    id?: number
+                    type: string
+                    user_id: string
+                }
+                Update: {
+                    amount?: number
+                    created_at?: string
+                    description?: string | null
+                    id?: number
+                    type?: string
+                    user_id?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "techcoin_transactions_user_id_fkey"
+                        columns: ["user_id"]
+                        isOneToOne: false
+                        referencedRelation: "profiles"
+                        referencedColumns: ["id"]
+                    }
+                ]
+            }
+
         }
         Views: {
             [_ in never]: never

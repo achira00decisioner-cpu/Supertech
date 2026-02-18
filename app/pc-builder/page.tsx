@@ -107,9 +107,9 @@ export default function PCBuilderPage() {
         setTimeout(() => {
             // Updated Logic: Strict Constraint Solver
             // 1. Identify Fixed Base Costs (Cheapest reliable options)
-            let selectedStorage = DB.ssds[0];
-            let selectedPsu = DB.psus[0];
-            let selectedCase = DB.cases[0];
+            const selectedStorage = DB.ssds[0];
+            const selectedPsu = DB.psus[0];
+            const selectedCase = DB.cases[0];
 
             let bestSpec: any = null;
             let maxPrice = -1;
@@ -190,7 +190,7 @@ export default function PCBuilderPage() {
             }
 
             // 3. Upgrade Components if Budget Remains
-            let currentComponents = { ...bestSpec };
+            const currentComponents = { ...bestSpec };
             let currentTotal = bestSpec.total;
             let remaining = budget - currentTotal;
 

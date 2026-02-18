@@ -203,7 +203,7 @@ export default function CustomerDashboard() {
 
     const fetchAddresses = async () => {
         if (!user) return;
-        const { data } = await supabase.from('address').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+        const { data } = await supabase.from('addresses').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
         if (data) setAddresses(data);
     };
 
@@ -258,7 +258,7 @@ export default function CustomerDashboard() {
         e.preventDefault();
         if (!user) return;
 
-        const { error } = await supabase.from('address').insert({
+        const { error } = await supabase.from('addresses').insert({
             user_id: user.id,
             ...newAddress,
             is_default: addresses.length === 0 // First address is default
@@ -269,7 +269,7 @@ export default function CustomerDashboard() {
         } else {
             alert('เพิ่มที่อยู่เรียบร้อย');
             setIsAddingAddress(false);
-            setNewAddress({ recipient_name: '', phone: '', address: '', district: '', province: '', zipcode: '' });
+            setNewAddress({ recipient_name: '', phone: '', address: '', district: '', province: '', zipcode: '', sub_district: '' });
             fetchAddresses();
         }
     };
@@ -310,7 +310,7 @@ export default function CustomerDashboard() {
 
         try {
             // Step 1: Fetch Favorites IDs
-            const { data: favData, error: favError } = await (supabase.from('favorites' as any) as any)
+            const { data: favData, error: favError } = await supabase.from('favorites')
                 .select('id, product_id, created_at')
                 .eq('user_id', user.id)
                 .order('created_at', { ascending: false });
@@ -331,7 +331,7 @@ export default function CustomerDashboard() {
             // Step 2: Fetch Products details
             const productIds = favData
                 .map((f: any) => f.product_id ? Number(f.product_id) : null)
-                .filter((id) => id !== null && !isNaN(id));
+                .filter((id): id is number => id !== null && !isNaN(id));
 
             if (productIds.length === 0) {
                 console.log('fetchWishlist: No valid product IDs found.');
@@ -361,7 +361,7 @@ export default function CustomerDashboard() {
                     const product = productsMap.get(fav.product_id);
                     // Standardize image property
                     if (product) {
-                        product.image = product.image_url;
+                        (product as any).image = product.image_url;
                     }
                     return product ? { ...fav, product } : null;
                 }).filter(Boolean); // Remove nulls (products that might have been deleted)
@@ -376,7 +376,7 @@ export default function CustomerDashboard() {
 
     const handleRemoveFavorite = async (id: number) => {
         if (!confirm('ลบสินค้านี้ออกจากรายการที่ถูกใจ?')) return;
-        const { error } = await (supabase.from('favorites' as any) as any).delete().eq('id', id);
+        const { error } = await supabase.from('favorites').delete().eq('id', id);
         if (error) alert('ลบไม่สำเร็จ: ' + error.message);
         else fetchWishlist();
     };
@@ -385,10 +385,10 @@ export default function CustomerDashboard() {
         if (!user) return;
         setLoadingTransactions(true);
         // Cast to any to bypass missing type definitions
-        const { data } = await (supabase.from('techcoin_transactions' as any)
+        const { data } = await supabase.from('techcoin_transactions')
             .select('*')
             .eq('user_id', user.id)
-            .order('created_at', { ascending: false }) as any);
+            .order('created_at', { ascending: false });
         if (data) setTransactions(data);
         setLoadingTransactions(false);
     };
@@ -422,7 +422,7 @@ export default function CustomerDashboard() {
 
     const handleDeleteAddress = async (id: number) => {
         if (!confirm('ยืนยันการลบที่อยู่นี้?')) return;
-        const { error } = await supabase.from('address').delete().eq('id', id);
+        const { error } = await supabase.from('addresses').delete().eq('id', id);
         if (error) {
             alert('เกิดข้อผิดพลาดในการลบที่อยู่: ' + error.message);
         } else {
@@ -467,7 +467,7 @@ export default function CustomerDashboard() {
                 const refundAmount = order.techcoins_used;
 
                 // Insert Refund Transaction
-                const { error: txError } = await (supabase.from('techcoin_transactions' as any) as any).insert({
+                const { error: txError } = await supabase.from('techcoin_transactions').insert({
                     user_id: user?.id,
                     amount: refundAmount,
                     type: 'earn', // earning back
