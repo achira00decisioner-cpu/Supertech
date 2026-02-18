@@ -1,6 +1,6 @@
 'use client';
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useProducts } from '../../context/ProductContext';
@@ -388,7 +388,7 @@ function ReviewList({ productId }: { productId: any }) {
     const [editRating, setEditRating] = useState(5);
     const [editComment, setEditComment] = useState('');
 
-    const fetchReviews = async () => {
+    const fetchReviews = useCallback(async () => {
         if (!productId) return;
         setLoading(true);
         try {
@@ -439,11 +439,11 @@ function ReviewList({ productId }: { productId: any }) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [productId]);
 
     useEffect(() => {
         fetchReviews();
-    }, [productId]);
+    }, [fetchReviews]);
 
     const handleDelete = async (reviewId: number) => {
         if (!confirm('คุณแน่ใจว่าต้องการลบรีวิวนี้?')) return;

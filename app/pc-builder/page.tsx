@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Monitor, Cpu, CheckCircle, Zap, ShieldCheck, Box, Disc, RefreshCcw, Save, Printer } from 'lucide-react';
+import { Monitor, Cpu, CheckCircle, Zap, ShieldCheck, Box, Disc, RefreshCcw, Save } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-hot-toast';
 import { useProducts } from '../context/ProductContext';

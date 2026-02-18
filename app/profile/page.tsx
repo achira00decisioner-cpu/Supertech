@@ -19,29 +19,30 @@ export default function ProfilePage() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        const fetchTransactions = async () => {
+            if (!user) return;
+            setIsLoading(true);
+            try {
+                // Cast to any to bypass missing type definitions
+                const { data, error } = await (supabase
+                    .from('techcoin_transactions' as any)
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false }) as any);
+
+                if (error) throw error;
+                setTransactions(data || []);
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
         if (user) {
             fetchTransactions();
         }
     }, [user]);
-
-    const fetchTransactions = async () => {
-        setIsLoading(true);
-        try {
-            // Cast to any to bypass missing type definitions
-            const { data, error } = await (supabase
-                .from('techcoin_transactions' as any)
-                .select('*')
-                .eq('user_id', user!.id)
-                .order('created_at', { ascending: false }) as any);
-
-            if (error) throw error;
-            setTransactions(data || []);
-        } catch (error) {
-            console.error('Error fetching transactions:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     if (!user) {
         return (
@@ -109,7 +110,7 @@ export default function ProfilePage() {
                             {transactions.map((tx) => (
                                 <div key={tx.id} className="p-4 hover:bg-gray-50 transition-colors flex items-center gap-4">
                                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${tx.type === 'earn' ? 'bg-green-100 text-green-600' :
-                                            tx.type === 'redeem' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500'
+                                        tx.type === 'redeem' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500'
                                         }`}>
                                         {tx.type === 'earn' ? <ArrowDownLeft className="w-5 h-5" /> :
                                             tx.type === 'redeem' ? <ArrowUpRight className="w-5 h-5" /> : <Clock className="w-5 h-5" />}

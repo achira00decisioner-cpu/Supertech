@@ -2,9 +2,66 @@
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useProducts } from '../context/ProductContext';
-import { ShoppingCart, Filter, ArrowUpDown, Star, ChevronDown, ChevronRight } from 'lucide-react';
+import { ShoppingCart, Filter, ChevronDown, ChevronRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useSearchParams } from 'next/navigation';
+
+const CATEGORIES = [
+    {
+        name: 'โน๊ตบุ๊ค',
+        icon: '💻',
+        subcategories: ['โน๊ตบุ๊คเล่นเกม', 'โน๊ตบุ๊คบางเบา', 'โน๊ตบุ๊คสำหรับองค์กร']
+    },
+    {
+        name: 'จอมอนิเตอร์',
+        icon: '🖥️',
+        subcategories: ['49 นิ้ว', '34 นิ้ว', '32 นิ้ว', '27 นิ้ว', '24 นิ้ว']
+    },
+    { name: 'แท็บเล็ต', icon: '📱' },
+    {
+        name: 'ซีพียู',
+        icon: '🧠',
+        subcategories: ['INTEL', 'AMD']
+    },
+    {
+        name: 'การ์ดจอ',
+        icon: '🎮',
+        subcategories: ['INTEL ARC', 'AMD RADEON', 'NVIDIA GEFORCE']
+    },
+    {
+        name: 'เมนบอร์ด',
+        icon: '🔌',
+        subcategories: ['INTEL', 'AMD']
+    },
+    {
+        name: 'แรม',
+        icon: '💾',
+        subcategories: ['RAM NOTEBOOK', 'DDR5', 'DDR4']
+    },
+    {
+        name: 'ฮาร์ดดิสก์ และ เอสเอสดี',
+        icon: '💽',
+        subcategories: ['การ์ด M.2', 'SSD', 'HDD']
+    },
+    {
+        name: 'พาวเวอร์ซัพพลาย',
+        icon: '⚡',
+        subcategories: ['1000W+', '850W', '750W', '650W']
+    },
+    {
+        name: 'เคส',
+        icon: '🕋',
+        subcategories: ['Full-Tower', 'Mid-Tower', 'Mini-Tower']
+    },
+    {
+        name: 'ชุดระบายความร้อน',
+        icon: '❄️',
+        subcategories: ['ชุดน้ำปิด', 'พัดลมซีพียู', 'พัดลมเคส']
+    },
+    { name: 'คีย์บอร์ด', icon: '⌨️' },
+    { name: 'เมาส์', icon: '🖱️' },
+    { name: 'ลำโพง', icon: '🔊' },
+];
 
 export default function ProductsPage() {
     const { products } = useProducts();
@@ -77,62 +134,7 @@ export default function ProductsPage() {
         }
     }, [categoryParam, searchParam]);
 
-    const CATEGORIES = [
-        {
-            name: 'โน๊ตบุ๊ค',
-            icon: '💻',
-            subcategories: ['โน๊ตบุ๊คเล่นเกม', 'โน๊ตบุ๊คบางเบา', 'โน๊ตบุ๊คสำหรับองค์กร']
-        },
-        {
-            name: 'จอมอนิเตอร์',
-            icon: '🖥️',
-            subcategories: ['49 นิ้ว', '34 นิ้ว', '32 นิ้ว', '27 นิ้ว', '24 นิ้ว']
-        },
-        { name: 'แท็บเล็ต', icon: '📱' },
-        {
-            name: 'ซีพียู',
-            icon: '🧠',
-            subcategories: ['INTEL', 'AMD']
-        },
-        {
-            name: 'การ์ดจอ',
-            icon: '🎮',
-            subcategories: ['INTEL ARC', 'AMD RADEON', 'NVIDIA GEFORCE']
-        },
-        {
-            name: 'เมนบอร์ด',
-            icon: '🔌',
-            subcategories: ['INTEL', 'AMD']
-        },
-        {
-            name: 'แรม',
-            icon: '💾',
-            subcategories: ['RAM NOTEBOOK', 'DDR5', 'DDR4']
-        },
-        {
-            name: 'ฮาร์ดดิสก์ และ เอสเอสดี',
-            icon: '💽',
-            subcategories: ['การ์ด M.2', 'SSD', 'HDD']
-        },
-        {
-            name: 'พาวเวอร์ซัพพลาย',
-            icon: '⚡',
-            subcategories: ['1000W+', '850W', '750W', '650W']
-        },
-        {
-            name: 'เคส',
-            icon: '🕋',
-            subcategories: ['Full-Tower', 'Mid-Tower', 'Mini-Tower']
-        },
-        {
-            name: 'ชุดระบายความร้อน',
-            icon: '❄️',
-            subcategories: ['ชุดน้ำปิด', 'พัดลมซีพียู', 'พัดลมเคส']
-        },
-        { name: 'คีย์บอร์ด', icon: '⌨️' },
-        { name: 'เมาส์', icon: '🖱️' },
-        { name: 'ลำโพง', icon: '🔊' },
-    ];
+
 
     const handleCategoryClick = (categoryName: string) => {
         setSelectedCategory(categoryName);
